@@ -31,6 +31,7 @@ public class Options {
 
             List<Persona> persons=mySession.createQuery("from Persona").getResultList();
             //mostrar las personas
+            System.out.println("PERSONAS ENCONTRADAS");
             AdditionalMethods.showPersons(persons);
 
             //commit
@@ -47,7 +48,7 @@ public class Options {
     public void option_insert(){
         create_factory_session();
         try{
-            Persona person=new Persona();
+            Persona person=AdditionalMethods.createPerson();
             mySession.beginTransaction();
             mySession.save(person);
 
@@ -63,13 +64,16 @@ public class Options {
 
     //Update
     public void option_update(){
+        option_select();
+        int idperson=AdditionalMethods.selectIdPerson("actualizar");
+        Double newPeso=AdditionalMethods.selectColumnUpdate("peso");
+
         create_factory_session();
         try{
-            int personId=1;
             mySession.beginTransaction();
 
-            Persona person=mySession.get(Persona.class,personId);
-            person.setNombre("Pepe");
+            Persona person=mySession.get(Persona.class,idperson);
+            person.setPeso(newPeso);
 
             //commit
             mySession.getTransaction().commit();
@@ -85,11 +89,15 @@ public class Options {
 
     //Delete
     public void option_delete(){
+        option_select();
+        int idperson=AdditionalMethods.selectIdPerson("eliminar");
+
         create_factory_session();
+
         try{
             mySession.beginTransaction();
 
-            mySession.createQuery("delete Persona where id=1").executeUpdate();
+            mySession.createQuery("delete Persona where id="+idperson).executeUpdate();
 
             //commit
             mySession.getTransaction().commit();
